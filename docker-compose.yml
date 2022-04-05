@@ -1,0 +1,39 @@
+version: "3.1"
+
+services:
+  foodb:
+    image: foodb
+    environment:
+      JWT_SECRETKEY: "${JWT_SECRETKEY}"
+      DATABASE_URL: "${DATABASE_URL}"
+    ports:
+      - 5000:80
+    networks:
+      - db-network
+    depends_on:
+      - db
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_db_password
+    ports:
+      - 5432:5432
+    secrets:
+      - postgres_db_password
+    networks:
+      - db-network
+
+  adminer:
+    image: adminer
+    ports:
+      - 8080:8080
+    networks:
+      - db-network
+
+secrets:
+  postgres_db_password:
+    file: db_password.txt
+
+networks:
+  db-network:
+    name: db-network
