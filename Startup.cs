@@ -45,7 +45,7 @@ namespace foodb
             var databaseUrl = "";
             var jwtSecret = "";
 
-            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Docker")
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Docker" || Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Heroku")
             {
                 databaseUrl = System.Environment.GetEnvironmentVariable("DATABASE_URL");
                 jwtSecret = System.Environment.GetEnvironmentVariable("JWT_SECRETKEY");
@@ -64,6 +64,13 @@ namespace foodb
             builder.Username = userInfo[0];
             builder.Password = userInfo[1];
             builder.Database = databaseUri.LocalPath.TrimStart('/');
+
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Heroku")
+            {
+                builder.SslMode = SslMode.Require;
+                builder.TrustServerCertificate = true;
+                builder.Pooling = true;
+            }
 
             // DB Context
             services.AddDbContext<FooDBContext>(opt => opt.UseNpgsql(builder.ConnectionString));
