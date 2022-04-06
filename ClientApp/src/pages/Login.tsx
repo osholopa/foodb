@@ -23,7 +23,6 @@ export default function Login() {
     e.preventDefault();
     try {
       const response = await login(values).unwrap();
-      console.log(response)
       dispatch(setToken((response as IAuthSuccessResponse)))
       navigate('/')
     } catch (error) {
