@@ -9,6 +9,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - name: Build, push and release container to heroku
         uses: gonuit/heroku-docker-deploy@v1.3.3
         with:
